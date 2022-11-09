@@ -1,0 +1,137 @@
+﻿
+@using System.Data
+
+@model QueryBuilder.Models.Query
+
+
+@{
+    ViewData["Title"] = "QueryBuilder";
+
+    var cout = ViewBag.data;
+    var exec = ViewBag.exce;
+    DataTable dt = new DataTable();
+    dt = ViewBag.list;
+    //Layout = null;
+
+}
+<link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+<script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+<style>
+    .table-wrapper {
+        margin: 4px, 4px;
+        padding: 4px;
+        background-color: white;
+        width: 100%;
+        height: 370px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: justify;
+    }
+    th, tr {
+        font-size: 10px;
+    }
+</style>
+
+<h1>QueryBuilder</h1>
+
+@using (Html.BeginForm())
+{
+    <div>
+        <div>
+            <label class="font-weight-bold">Enter Password</label>
+
+            @Html.TextBoxFor(m => m.pass, new { @type = "Password", @class = "Form-Control" })
+
+        </div>
+        <div>
+            <label class="font-weight-bold">Enter Query</label>
+            <br />
+
+            @Html.TextAreaFor(m => m.QueryText, 12, 150, new { @class = "Form-Control" })
+
+
+        </div>
+        <div>
+            <input type="submit" class="btn btn-danger" id="exec" value="Execute " />&nbsp;<button type="button" class="btn btn-success" id="clear">Clear</button>
+        </div>
+    </div>
+
+
+
+   
+        if (cout > 0)
+        {
+            <label class="text-danger font-weight-bold">Your Command Executed !! Result &nbsp;</label><label class="text-success font-weight-bold">@cout</label>
+        }
+        else
+        {
+            <label class="text-danger font-weight-bold">@exec</label>
+            <div class="table-wrapper">
+                @if (dt != null)
+                {
+                    <div style="background-color:whitesmoke;">
+                        <div class="text-right">
+                            <button id="btnExport" class="btn btn-danger">Excel</button>
+                        </div>
+                        <table class="table table-bordered table-responsive" id="table">
+                            <tr>
+                                @foreach (DataColumn col in dt.Columns)
+                                {
+                                    <th>@col.ColumnName</th>
+                                }
+                            </tr>
+                            @foreach (DataRow row in dt.Rows)
+                            {
+                                <tr>
+                                    @foreach (DataColumn col in dt.Columns)
+                                    {
+                                        <td>@row[col.ColumnName]</td>
+                                    }
+                                </tr>
+                            }
+                        </table>
+                       
+                    </div>
+                    dt = null;
+                }
+            </div>
+
+        }
+
+       
+            
+ }
+
+
+
+
+
+        <script type="text/javascript">
+
+            $("#btnExport").click(function () {
+
+                let table = document.getElementsByTagName("table");
+                TableToExcel.convert(table[0], {
+                    name: `export.xlsx`,
+                    sheet: {
+                        name: 'Sheet 1'
+                    }
+                });
+            });
+            $('#clear').click(function () {
+                $('#QueryText').val('');
+            });
+            $('#exec').click(function () {
+
+                var QueryText = $('#QueryText').val().trim();
+
+                if (QueryText.length == 0 && QueryText == '') {
+                    alert('Enter Query !!!!!!!!');
+                    return false;
+                }
+            });
+        </script>
+
