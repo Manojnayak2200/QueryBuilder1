@@ -25,6 +25,12 @@ namespace QueryBuilder.Controllers
             return View();
         }
 
+        public IActionResult bhul()
+        {
+            return View();
+        }
+
+
         public IActionResult Privacy()
         {
             return View();
